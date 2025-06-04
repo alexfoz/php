@@ -1,4 +1,0 @@
-[20-May-2025 00:03:50 UTC] PHP Fatal error:  Uncaught DivisionByZeroError: Division by zero in /opt/lampp/htdocs/ver_log_erro.php:5
-Stack trace:
-#0 {main}
-  thrown in /opt/lampp/htdocs/ver_log_erro.php on line 5
