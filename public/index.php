@@ -2,7 +2,11 @@
 
 session_start(); //Inicia a sessão
 
+// Controllers
 require_once '../controller/GlicemiaController.php'; // Importa o controlador
+
+// Models
+require_once '../model/Glicemia.php';
 
 // Declaração de variáveis globais
 $lista = [];

@@ -12,9 +12,9 @@
         <form action="/glicemia/store" method="POST">
             <input type="hidden" name="id" value="<?= $id ?? "" ?>">
             <p>ID: <?= $id ?></p>
-            <p>Data: <input type="text" name="data" value="<?= htmlspecialchars($dados['data'] ?? "") ?>"></p>
-            <p>Valor: <input type="text" name="valor" value="<?= htmlspecialchars($dados['valor'] ?? "") ?>"></p>
-            <p>Hora: <input type="text" name="hora" value="<?= htmlspecialchars($dados['hora'] ?? "") ?>"></p>
+            <p>Data: <input type="date" name="data" value="<?= htmlspecialchars(substr($dados->data ?? "", 0, 10)) ?>"></p>
+            <p>Hora: <input type="time" name="hora" value="<?= htmlspecialchars(substr($dados->data ?? "", 11, 5)) ?>"></p>
+            <p>Valor: <input type="text" name="valor" value="<?= htmlspecialchars($dados->valor ?? "") ?>"></p>
             <p>
                 <input type="submit" value="Gravar">
                 <a href="/glicemia">Cancelar</a>

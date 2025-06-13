@@ -14,20 +14,18 @@
         <table border="1">
             <tr>
                 <th>ID</th>
-                <th>Data</th>
-                <th>Hora</th>
+                <th>Data Hora</th>
                 <th>Valor</th>
                 <th>Ações</th>
             </tr>
-            <?php foreach ($lista as $id => $dado) { ?>
+            <?php foreach ($lista as $dado) { ?>
                 <tr>
-                    <td><?= $id ?></td>
-                    <td><?= htmlspecialchars($dado['data']) ?></td>
-                    <td><?= htmlspecialchars($dado['hora']) ?></td>
-                    <td><?= htmlspecialchars($dado['valor']) ?></td>
+                    <td><?= $dado->id ?></td>
+                    <td><?= htmlspecialchars($dado->data) ?></td>
+                    <td><?= htmlspecialchars($dado->valor) ?></td>
                     <td>
-                        <a href="/glicemia/edit?id=<?= $id ?>">Editar</a>
-                        <a href="/glicemia/delete?id=<?= $id ?>">Excluir</a>
+                        <a href="/glicemia/edit?id=<?= $dado->id ?>">Editar</a>
+                        <a href="/glicemia/delete?id=<?= $dado->id ?>">Excluir</a>
                     </td>
                 </tr>
         <?php } ?>
