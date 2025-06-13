@@ -9,7 +9,7 @@ $lista = [];
 $mensagem = "";
 
 $uri = $_SERVER['REQUEST_URI'];
-$path = parse_url($uri, PHP_URL_PATH);
+$path = parse_url($uri, PHP_URL_PATH); 
 $rota = trim($path, '/');
 
 switch ($rota) {
@@ -33,6 +33,11 @@ switch ($rota) {
     case 'glicemia/store':
         (new GlicemiaController())->store();
         break;
+
+    case 'glicemia/delete':
+        (new GlicemiaController())->delete();
+        break;
+    
 
     default:
         echo "erro 404 - rota não localizada";
