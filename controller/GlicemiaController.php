@@ -8,12 +8,12 @@ class GlicemiaController
 
         $lista = Glicemia::all();
 
-        require_once '../view/listar.php';
+        require_once '../view/glicemia/listar.php';
     }
 
     public function create()
     {
-        require_once '../view/editar.php';
+        require_once '../view/glicemia/editar.php';
     }
 
     public function store()
@@ -33,7 +33,7 @@ class GlicemiaController
         if (empty($data) || empty($valor) || empty($hora)) {
             global $mensagem;
             $mensagem = "Todos os campos são obrigatórios";
-            require_once '../view/editar.php';
+            require_once '../view/glicemia/editar.php';
             return;
         }
 
@@ -55,7 +55,7 @@ class GlicemiaController
 
         $dados = Glicemia::find($id);
 
-        require_once '../view/editar.php';
+        require_once '../view/glicemia/editar.php';
     }
 
         public function delete()
