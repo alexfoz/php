@@ -85,6 +85,8 @@ class Glicemia
 
     private static function getConnection()
     {
-        return new PDO('mysql:host=127.0.0.1;dbname=health_care', 'root', '');
+        return new PDO('mysql:host=127.0.0.1;dbname=health_care', 'alex', '@1945Lucy@');
+
+        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
     }
 }
