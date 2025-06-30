@@ -1,6 +1,6 @@
 <?php
 
-class Paciente
+class Paciente extends Model
 {
     var $id;
     var $nome;
@@ -48,11 +48,23 @@ class Paciente
 
     }
 
-    public static function all()
+    public static function all($nome)
     {
         $connection = self::getConnection();
 
-        $statement = $connection->prepare("SELECT * FROM paciente");
+        $sql = "SELECT * FROM paciente";
+
+        if (!empty($nome)) {
+            $sql = $sql . " WHERE nome LIKE :nome";
+        }
+
+        $statement = $connection->prepare($sql);
+
+        if (!empty($nome)) {
+            $nome = "%" . $nome . "%";
+            $statement->bindParam(':nome', $nome);
+        }
+
         $statement->execute();
 
         $lista = [];
@@ -95,12 +107,5 @@ class Paciente
         }
 
         return null;
-    }
-
-    private static function getConnection()
-    {
-        return new PDO('mysql:host=127.0.0.1;dbname=health_care', 'alex', '@1945Lucy@');
-
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
     }
 }

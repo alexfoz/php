@@ -7,10 +7,18 @@
     <a href="/">Voltar</a>
     <a href="/paciente/create">Criar</a>
 
-    <?php global $lista; ?>
+    <?php global $lista, $nome; ?>
+
+    <h3>Dados Cadastrados:</h3>
+
+    <form>
+        <p>
+            <input type="text" name="nome" value="<?= $nome ?? "" ?>">
+            <input type="submit" value="Filtrar">
+        </p>
+    </form>
 
     <?php if (!empty($lista)): ?>
-        <h3>Dados Cadastrados:</h3>
         <table border="1">
             <tr>
                 <th>ID</th>
@@ -36,7 +44,7 @@
                 </tr>
         <?php } ?>
     <?php else: ?>
-        <p>Nenhum dado cadastrado.</p>
+        <p>Paciente não encontado.</p>
     <?php endif; ?>
 </body>
 </html>

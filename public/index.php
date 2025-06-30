@@ -11,6 +11,7 @@ require_once '../controller/PacienteController.php';
 require_once '../controller/MedicoController.php';
 
 // Models
+require_once '../model/Model.php';
 require_once '../model/Glicemia.php';
 require_once '../model/Paciente.php';
 require_once '../model/Medico.php';

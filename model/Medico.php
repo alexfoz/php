@@ -1,6 +1,6 @@
 <?php
 
-class Medico
+class Medico extends Model
 {
     var $id;
     var $nome;
@@ -104,12 +104,5 @@ class Medico
         }
 
         return null;
-    }
-
-    private static function getConnection()
-    {
-        return new PDO('mysql:host=127.0.0.1;dbname=health_care', 'alex', '@1945Lucy@');
-
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
     }
 }

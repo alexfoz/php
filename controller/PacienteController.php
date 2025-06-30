@@ -5,9 +5,11 @@ class PacienteController
 {
     public function index()
     {
-        global $lista;
+        global $lista, $nome;
 
-        $lista = Paciente::all();
+        $nome = $_REQUEST['nome'] ?? "";
+
+        $lista = Paciente::all($nome);
 
         require_once '../view/paciente/listar.php';
     }
