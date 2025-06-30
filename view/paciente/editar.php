@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<head>
+<link rel="stylesheet" href="/main.css">
+</head>
 <html>
     <head>
         <title>Cadastro Paciente</title>
@@ -12,25 +15,24 @@
         <form action="/paciente/store" method="POST">
             <input type="hidden" name="id" value="<?= $id ?? "" ?>">
             <!--<p>ID: <?= $id ?></p> -->
-            <table>
+            <table class="editar">
                 <tr>
-                    <th style="text-align: right">Nome:</th>
+                    <th>Nome:</th>
                     <td><input type="text" name="nome" value="<?= htmlspecialchars($dados->nome ?? "") ?>"></td>
                 </tr>
-
                 <tr>
-                    <th style="text-align: right">Nascimento:</th>
+                    <th>Nascimento:</th>
                     <td><input type="date" name="dataNascimento" value="<?= htmlspecialchars($dados->dataNascimento ?? "") ?>"></td>
                 </tr>
-                    <th style="text-align: right">Telefone:</th>
+                    <th>Telefone:</th>
                     <td><input type="text" name="telefone" value="<?= htmlspecialchars($dados->telefone ?? "") ?>"></td>
                 </tr>
                 <tr>
-                    <th style="text-align: right">Email:</th>
+                    <th>Email:</th>
                     <td><input type="email" name="email" value="<?= htmlspecialchars($dados->email ?? "") ?>"></td>
                 </tr>
                 <tr>
-                    <th style="text-align: right">Observação:</th>
+                    <th>Observação:</th>
                     <td><textarea name="observacao" rows="4" cols="50"><?= htmlspecialchars($dados->observacao ?? "") ?></textarea></td>
                 </tr>
                 <tr>
