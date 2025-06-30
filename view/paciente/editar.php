@@ -12,15 +12,35 @@
         <form action="/paciente/store" method="POST">
             <input type="hidden" name="id" value="<?= $id ?? "" ?>">
             <!--<p>ID: <?= $id ?></p> -->
-            <p>Nome: <input type="text" name="nome" value="<?= htmlspecialchars($dados->nome ?? "") ?>"></p>
-            <p>Data de Nascimento: <input type="date" name="dataNascimento" value="<?= htmlspecialchars($dados->dataNascimento ?? "") ?>"></p>
-            <p>Telefone: <input type="text" name="telefone" value="<?= htmlspecialchars($dados->telefone ?? "") ?>"></p>
-            <p>Email: <input type="email" name="email" value="<?= htmlspecialchars($dados->email ?? "") ?>"></p>
-            <p><textarea name="observacao" rows="4" cols="50"><?= htmlspecialchars($dados->observacao ?? "") ?></textarea></p>    
-            <p>
-                <input type="submit" value="Gravar">
-                <a href="/paciente">Cancelar</a>
-            </p>
+            <table>
+                <tr>
+                    <th style="text-align: right">Nome:</th>
+                    <td><input type="text" name="nome" value="<?= htmlspecialchars($dados->nome ?? "") ?>"></td>
+                </tr>
+
+                <tr>
+                    <th style="text-align: right">Nascimento:</th>
+                    <td><input type="date" name="dataNascimento" value="<?= htmlspecialchars($dados->dataNascimento ?? "") ?>"></td>
+                </tr>
+                    <th style="text-align: right">Telefone:</th>
+                    <td><input type="text" name="telefone" value="<?= htmlspecialchars($dados->telefone ?? "") ?>"></td>
+                </tr>
+                <tr>
+                    <th style="text-align: right">Email:</th>
+                    <td><input type="email" name="email" value="<?= htmlspecialchars($dados->email ?? "") ?>"></td>
+                </tr>
+                <tr>
+                    <th style="text-align: right">Observação:</th>
+                    <td><textarea name="observacao" rows="4" cols="50"><?= htmlspecialchars($dados->observacao ?? "") ?></textarea></td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td>
+                        <input type="submit" value="Gravar">
+                        <a href="/paciente">Cancelar</a>
+                    </td>
+                </tr>
+            </table>
         </form>
     </body>
 </html>
