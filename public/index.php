@@ -7,11 +7,13 @@ session_start(); // Inicia a sessão
 
 // Controllers
 require_once '../controller/GlicemiaController.php';
-require_once '../controller/PacienteController.php'; // Novo controller
+require_once '../controller/PacienteController.php';
+require_once '../controller/MedicoController.php';
 
 // Models
 require_once '../model/Glicemia.php';
 require_once '../model/Paciente.php';
+require_once '../model/Medico.php';
 
 // Declaração de variáveis globais
 $lista = [];
@@ -49,6 +51,10 @@ switch ($rota) {
         (new GlicemiaController())->delete();
         break;
 
+    case 'glicemia/relatorio':
+        (new GlicemiaController())->relatorio();
+        break;
+
     // Rotas Paciente
     case 'paciente':
         (new PacienteController())->index();
@@ -68,6 +74,27 @@ switch ($rota) {
 
     case 'paciente/delete':
         (new PacienteController())->delete();
+        break;
+
+    // Rotas Médico
+    case 'medico':
+        (new MedicoController())->index();
+        break;
+
+    case 'medico/create':
+        (new MedicoController())->create();
+        break;
+
+    case 'medico/edit':
+        (new MedicoController())->edit();
+        break;
+
+    case 'medico/store':
+        (new MedicoController())->store();
+        break;
+
+    case 'medico/delete':
+        (new MedicoController())->delete();
         break;
 
     // Rota não encontrada

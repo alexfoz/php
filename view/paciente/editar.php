@@ -5,7 +5,7 @@
         <meta charset="UTF-8">
     </head>
     <body>
-        <h2>Formulário de Cadastro</h2>
+        <h2>Formulário de Cadastro Paciente</h2>
         <?php global $mensagem; ?>
         <?php global $dados; ?>
         <p><?= $mensagem; ?></p>
