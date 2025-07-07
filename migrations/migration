@@ -1,0 +1,10 @@
+// File: migrations/20231001_add_medico_to_paciente.php
+-- This migration adds a foreign key column 'medico_id' to the 'paciente'
+-- table, linking it to the 'medico' table. The foreign key will be set to NULL
+-- on delete and will cascade updates.  This allows each patient to be associated with a doctor.
+
+ALTER TABLE paciente
+ADD COLUMN medico_id INT,
+ADD CONSTRAINT fk_medico_id FOREIGN KEY (medico_id) REFERENCES medico(id)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE;

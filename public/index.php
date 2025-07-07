@@ -56,6 +56,14 @@ switch ($rota) {
         (new GlicemiaController())->relatorio();
         break;
 
+    case 'glicemia/exportar-pdf':
+    (new GlicemiaController())->exportarPdf();
+    break;
+
+    case 'glicemia/enviar-email':
+    (new GlicemiaController())->enviarEmail();
+    break;
+
     // Rotas Paciente
     case 'paciente':
         (new PacienteController())->index();

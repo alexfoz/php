@@ -27,6 +27,7 @@ class PacienteController
         $telefone = $_REQUEST['telefone'] ?? "";
         $email = $_REQUEST['email'] ?? "";
         $observacao = $_REQUEST['observacao'] ?? "";
+        $medico_id = $_REQUEST['medico_id'] ?? null;
 
         // Validação de campos obrigatórios
         if (empty($nome) || empty($dataNascimento) || empty($telefone) || empty($email)) {
@@ -40,6 +41,7 @@ class PacienteController
             $paciente->dataNascimento = $dataNascimento;
             $paciente->telefone = $telefone;
             $paciente->email = $email;
+            $paciente->medico_id = $_REQUEST ['medico_id'] ?? null; 
             $paciente->observacao = $observacao;
             $dados = $paciente;
             
@@ -53,8 +55,9 @@ class PacienteController
         $paciente->dataNascimento = $dataNascimento;
         $paciente->telefone = $telefone;
         $paciente->email = $email;
+        $paciente->medico_id = $medico_id;
         $paciente->observacao = $observacao;
-       
+          
         $paciente->save();
 
         // Redireciona para listagem

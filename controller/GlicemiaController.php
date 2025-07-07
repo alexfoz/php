@@ -1,6 +1,6 @@
 <?php
-use Dompdf\Dompdf;
 use PHPMailer\PHPMailer\PHPMailer;
+use Dompdf\Dompdf;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -88,23 +88,32 @@ class GlicemiaController
 
     public function relatorio()
     {
-        $de = $_GET['de'] ?? null;
-        $ate = $_GET['ate'] ?? null;
+    echo "<p>Entrou no método relatorio()</p>";
+    $de = $_GET['de'] ?? null;
+    $ate = $_GET['ate'] ?? null;
+    $pacienteId = $_GET['paciente_id'] ?? null;
 
-    if (!isset($_SESSION['paciente_id'])) {
-        $mensagem = "Sessão expirada. Faça login novamente.";
-        require '../view/glicemia/relatorio.php';
+    echo "<p>Data inicial: $de</p>";
+    echo "<p>Data final: $ate</p>";
+
+    $pacienteId = $_GET['paciente_id'] ?? null;
+
+    if (!$pacienteId) {
+    $mensagem = "Paciente não informado.";
+    require '../view/glicemia/relatorio.php';
+    return;
+    }
+
+    echo "<p>Sessão OK - paciente_id: " . $_SESSION['paciente_id'] . "</p>";
+
+     if (empty($de) || empty($ate) || empty($pacienteId)) {
+        $mensagem = "Preencha todos os campos.";
+        require '../view/glicemia/relatorio-form.php';
         return;
     }
 
-    if (empty($de) || empty($ate)) {
-        $mensagem = "Selecione o período.";
-        require '../view/glicemia/relatorio.php';
-        return;
-    }
-
-    $pacienteId = $_SESSION['paciente_id'];
-    $connection = Glicemia::getConnection();
+    $pacienteId = $_GET['paciente_id'] ?? null;
+    $connection = $this->conexao;
 
     $de .= " 00:00:00";
     $ate .= " 23:59:59";
@@ -118,55 +127,113 @@ class GlicemiaController
 
     $dados = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-    var_dump($dados); // <-- Teste o retorno
-    exit;
+    echo "<pre>";
+    var_dump($dados);
+    echo "</pre>";
 
     require '../view/glicemia/relatorio_resultado.php';
     }
 
-    public function exportarPdf()
+   public function exportarPdf()
     {
-        ob_start();
-        $_GET = $_POST;
-        $this->relatorio();
-        $html = ob_get_clean();
+    $de = $_POST['de'] ?? '';
+    $ate = $_POST['ate'] ?? '';
+    $pacienteId = $_POST['paciente_id'] ?? null;
 
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-        $dompdf->stream("relatorio_glicemia.pdf", ["Attachment" => true]);
+    if (empty($de) || empty($ate) || empty($pacienteId)) {
+        echo "Dados insuficientes para gerar o relatório PDF.";
+        return;
     }
+
+    // Carrega os dados
+    $connection = $this->conexao;
+    $de .= " 00:00:00";
+    $ate .= " 23:59:59";
+
+    $stmt = $connection->prepare("SELECT * FROM glicemia WHERE paciente_id = :paciente_id AND data_hora BETWEEN :de AND :ate ORDER BY data_hora");
+    $stmt->bindParam(':paciente_id', $pacienteId);
+    $stmt->bindParam(':de', $de);
+    $stmt->bindParam(':ate', $ate);
+    $stmt->execute();
+    $dados = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+    // Gera HTML
+    ob_start();
+    include '../view/glicemia/pdf_resultado.php';
+    $html = ob_get_clean();
+
+    // Gera PDF
+    $dompdf = new Dompdf();
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+
+    // Exibe no navegador
+    $dompdf->stream("relatorio_glicemia.pdf", ["Attachment" => false]);
+    }
+
 
     public function enviarEmail()
     {
-        ob_start();
-        $_GET = $_POST;
-        $this->relatorio();
-        $html = ob_get_clean();
+    $pacienteId = $_POST['paciente_id'] ?? null;
+    $de = $_POST['de'] ?? '';
+    $ate = $_POST['ate'] ?? '';
 
-    // Salva PDF
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-        $pdfOutput = $dompdf->output();
-        file_put_contents('/tmp/relatorio_glicemia.pdf', $pdfOutput);
+    if (!$pacienteId || !$de || !$ate) {
+        echo "Dados insuficientes para gerar o relatório.";
+        return;
+    }
 
-        $connection = $this->conexao;
-        $stmt = $connection->prepare("SELECT email FROM medico WHERE id = (SELECT medico_id FROM paciente WHERE id = :id)");
-        $stmt->bindParam(':id', $_SESSION['paciente_id']);
-        $stmt->execute();
-        $medico = $stmt->fetch(PDO::FETCH_OBJ);
+    // Busca os dados da glicemia
+    $dados = Glicemia::porPacienteEPeriodo($pacienteId, $de, $ate);
 
-        $mail = new PHPMailer(true);
-        $mail->setFrom('seusistema@dominio.com');
+    if (empty($dados)) {
+        echo "Nenhum dado encontrado para o período.";
+        return;
+    }
+
+    // Gera o conteúdo HTML do relatório
+    ob_start();
+    $de = htmlspecialchars($de);
+    $ate = htmlspecialchars($ate);
+    include '../view/glicemia/pdf_resultado.php';
+    $html = ob_get_clean();
+
+    // Gera PDF com Dompdf
+    $dompdf = new Dompdf();
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+    $pdfOutput = $dompdf->output();
+    file_put_contents('/tmp/relatorio_glicemia.pdf', $pdfOutput);
+
+    // Busca e-mail do médico vinculado ao paciente
+    $stmt = $this->conexao->prepare("SELECT m.email 
+                                     FROM medico m
+                                     JOIN paciente p ON p.medico_id = m.id
+                                     WHERE p.id = :id");
+    $stmt->bindParam(':id', $pacienteId);
+    $stmt->execute();
+    $medico = $stmt->fetch(PDO::FETCH_OBJ);
+
+    if (!$medico || empty($medico->email)) {
+        echo "E-mail do médico não encontrado.";
+        return;
+    }
+
+    // Envia o e-mail com PHPMailer
+    $mail = new PHPMailer(true);
+    try {
+        $mail->setFrom('seusistema@dominio.com', 'Sistema de Glicemia');
         $mail->addAddress($medico->email);
-        $mail->Subject = 'Relatório de Glicemia';
-        $mail->Body = 'Segue em anexo o relatório de glicemia do paciente.';
+        $mail->Subject = 'Relatório de Glicemia do Paciente';
+        $mail->Body = 'Segue anexo o relatório de glicemia.';
         $mail->addAttachment('/tmp/relatorio_glicemia.pdf');
         $mail->send();
 
         echo "Relatório enviado com sucesso para o médico.";
+    } catch (Exception $e) {
+        echo "Erro ao enviar e-mail: {$mail->ErrorInfo}";
     }
+}
 }

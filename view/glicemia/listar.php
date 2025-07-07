@@ -26,6 +26,7 @@
                     <td>
                         <a href="/glicemia/edit?id=<?= $dado->id ?>">Editar</a>
                         <a href="/glicemia/delete?id=<?= $dado->id ?>">Excluir</a>
+                        <a href="/glicemia/relatorio-form?paciente_id=<?= $paciente->id ?>">Gerar Relatório</a>
                     </td>
                 </tr>
         <?php } ?>

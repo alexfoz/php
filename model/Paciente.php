@@ -7,6 +7,8 @@ class Paciente extends Model
     var $dataNascimento;
     var $telefone;
     var $email;
+    var $medico_id; // Renomeado para evitar conflito com a coluna 'medico' que é um texto
+    var $medico;
     var $observacao;
 
     public function save()
@@ -15,29 +17,29 @@ class Paciente extends Model
 
         if ($this->id == null) {
 
-            $statement = $connection->prepare("INSERT INTO paciente (nome, dataNascimento, telefone, email, observacao) VALUES (:nome, :dataNascimento, :telefone, :email, :observacao)");
+            $statement = $connection->prepare("INSERT INTO paciente (nome, dataNascimento, telefone, email, medico_id, observacao) VALUES (:nome, :dataNascimento, :telefone, :email, :medico_id, :observacao)");
             $statement->bindParam(':nome', $this->nome);
             $statement->bindParam(':dataNascimento', $this->dataNascimento);
             $statement->bindParam(':telefone', $this->telefone);
             $statement->bindParam(':email', $this->email);
+            $statement->bindParam(':medico_id', $this->medico_id);
             $statement->bindParam(':observacao', $this->observacao);
             $statement->execute();
 
         } else {
 
-            $statement = $connection->prepare("UPDATE paciente SET nome = :nome, dataNascimento = :dataNascimento, telefone = :telefone, email = :email, observacao = :observacao WHERE id = :id");
+            $statement = $connection->prepare("UPDATE paciente SET nome = :nome, dataNascimento = :dataNascimento, telefone = :telefone, email = :email, medico_id = :medico_id, observacao = :observacao WHERE id = :id");
             $statement->bindParam(':nome', $this->nome);
             $statement->bindParam(':dataNascimento', $this->dataNascimento);
             $statement->bindParam(':telefone', $this->telefone);
             $statement->bindParam(':email', $this->email);
-            $statement->bindParam(':id', $this->id);
+            $statement->bindParam(':medico_id', $this->medico_id);
             $statement->bindParam(':observacao', $this->observacao);
             $statement->bindParam(':id', $this->id);
             $statement->execute();
 
         }
     }
-
     public static function delete($id)
     {
         $connection = self::getConnection();
@@ -52,10 +54,12 @@ class Paciente extends Model
     {
         $connection = self::getConnection();
 
-        $sql = "SELECT * FROM paciente";
+       $sql = "SELECT p.*, m.nome AS medico 
+                FROM paciente p 
+                LEFT JOIN medico m ON p.medico_id = m.id";
 
         if (!empty($nome)) {
-            $sql = $sql . " WHERE nome LIKE :nome";
+            $sql = $sql . " WHERE p.nome LIKE :nome";
         }
 
         $statement = $connection->prepare($sql);
@@ -77,6 +81,8 @@ class Paciente extends Model
             $paciente->dataNascimento = $row['dataNascimento'];
             $paciente->telefone = $row['telefone'];
             $paciente->email = $row['email'];
+            $paciente->medico_id = $row['medico_id'];
+            $paciente->medico = $row['medico'] ?? null;
             $paciente->observacao = $row['observacao'] ?? null;
             
             $lista[] = $paciente;
@@ -89,7 +95,12 @@ class Paciente extends Model
     {
         $connection = self::getConnection();
 
-        $statement = $connection->prepare("SELECT * FROM paciente WHERE id = :id");
+         $sql = "SELECT p.*, m.nome AS medico 
+                FROM paciente p 
+                LEFT JOIN medico m ON p.medico_id = m.id 
+                WHERE p.id = :id";
+
+        $statement = $connection->prepare($sql);
         $statement->bindParam(':id', $id);
         $statement->execute();
         
@@ -102,6 +113,8 @@ class Paciente extends Model
             $paciente->dataNascimento = $row['dataNascimento'];
             $paciente->telefone = $row['telefone'];
             $paciente->email = $row['email'];
+            $paciente->medico_id = $row['medico_id'] ?? null;
+            $paciente->medico = $row['medico'] ?? null;
             $paciente->observacao = $row['observacao'] ?? null;
             return $paciente;
         }
